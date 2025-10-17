@@ -1,9 +1,11 @@
 {
+
   "accountAssociation": {
-    "header": "...",
-    "payload": "...",
-    "signature": "..."
+    "header": "eyJmaWQiOjEzNDIyNzksInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg4MTNCNzM4YzljNzNBNUNBMzViODAzNTgyMDg2QjI2NjM1OEY5OWI5In0",
+    "payload": "eyJkb21haW4iOiJhaXJkcm9wLXByZWRpY3Rvci52ZXJjZWwuYXBwIn0",
+    "signature": "MHhhZWRhNmYzZjdjYzUyYTJkNTE0NTQ1YjIyMzY2MTUyNDE1YWM5NWFmNTNlY2NmYjI3NGQ2ZjNjMmY4NmQ0NTQzNTZlZTBiYTg2MjMzNmJkYmI0NTgzYmIyMGE3NWZlZmI5ZTMyMjA5MmYyNDYyOTU3ZWU4MzJkYjI2OGE0MTFkMTFi"
   },
+
   "name": "Airdrop Predictor",
   "description": "🎰 Spin to Win - mint kazanma mini app",
   "icon": "https://airdrop-predictor.vercel.app/icon.png",
