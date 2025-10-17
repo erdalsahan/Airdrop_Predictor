@@ -3,13 +3,10 @@ import { ethers } from "ethers";
 import { useAccount, useWriteContract } from "wagmi";
 import { parseEther } from "viem";
 
-const CONTRACT_ADDRESS = "0x8a0f9e67ba8f2076C4DfBd28735a4B4717C2B358";
-
+const CONTRACT_ADDRESS = "0x303D8e109143D6e44E5e1DFb0c2A03756C0B998d";
 const ABI = [
-  "function mint() external returns (uint256)",
-  "function balanceOf(address) external view returns (uint256)",
-  "function ownerOf(uint256) external view returns (address)",
-  "function totalSupply() external view returns (uint256)"
+  "function mint(string memory _uri) payable",
+  "function mintPrice() view returns (uint256)"
 ];
 
 export default function Wheel() {
@@ -33,7 +30,9 @@ export default function Wheel() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
   const { address, isConnected } = useAccount();
-
+const [tokenId, setTokenId] = useState(1);
+  const [amount, setAmount] = useState(1);
+  const [tokenURI, setTokenURI] = useState("https://gateway.pinata.cloud/ipfs/YOUR_METADATA.json");
   // ✅ mint fonksiyonu için wagmi hook
   const { writeContractAsync } = useWriteContract();
 
@@ -57,28 +56,42 @@ export default function Wheel() {
   };
 
   const handleMint = async () => {
-    try {
-      if (!isConnected) return alert("Cüzdan bağlı değil!");
-      await writeContractAsync({
-        address: "0x8a0f9e67ba8f2076C4DfBd28735a4B4717C2B358",
-        abi: [
-          {
-            name: "mint",
-            type: "function",
-            stateMutability: "nonpayable",
-            inputs: [{ name: "to", type: "address" }],
-            outputs: [{ name: "tokenId", type: "uint256" }],
-          },
-        ],
-        functionName: "mint",
-        args: [address],
-      });
-      alert("Mint başarılı 🎯");
-    } catch (err) {
-      console.error(err);
-      alert("Mint başarısız ❌");
-    }
-  };
+      try {
+        if (!window.ethereum) {
+          alert("Cüzdan bulunamadı!");
+          return;
+        }
+  
+        
+  
+        // Cüzdan bağlantısı
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+  
+        // Kontrat instance
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  
+        // Mint fiyatını al
+        const mintPrice = await contract.mintPrice();
+  
+        // Örnek tokenURI (sen IPFS linki ile değiştirebilirsin)
+        const tokenURI = "https://gateway.pinata.cloud/ipfs/YOUR_METADATA.json";
+  
+        // Mint işlemi
+        const tx = await contract.mint(tokenURI, { value: mintPrice });
+        alert("Mint işlemi gönderildi, bekleyin... ⏳");
+  
+        await tx.wait(); // On-chain olmasını bekle
+        alert(`NFT başarıyla mintlendi! TxHash: ${tx.hash}`);
+  
+      } catch (error) {
+        console.error(error);
+        alert("Mint işlemi başarısız ❌: " + (error?.message || error));
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div className="flex flex-col items-center gap-6 relative">
