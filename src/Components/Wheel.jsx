@@ -3,11 +3,13 @@ import { ethers } from "ethers";
 import { useAccount, useWriteContract } from "wagmi";
 import { parseEther } from "viem";
 
-const CONTRACT_ADDRESS = "0x5b3968CCf5FA0DF3D8e6f6bD7c85C7a11b677EBb";
+const CONTRACT_ADDRESS = "0x854e8a3EBe3C60459ED5e4194eE404e3AcECe0af";
 const ABI = [
-  "function mint(address to) external returns (uint256)",
+  "function mint() external returns (uint256)",
+  "function balanceOf(address user) external view returns (uint256)",
+  "function ownerOf(uint256 tokenId) external view returns (address)",
+  "function totalSupply() external view returns (uint256)"
 ];
-
 export default function Wheel() {
   const segments = useMemo(
     () => [
@@ -56,7 +58,7 @@ export default function Wheel() {
     try {
       if (!isConnected) return alert("Cüzdan bağlı değil!");
       await writeContractAsync({
-        address: "0x5b3968CCf5FA0DF3D8e6f6bD7c85C7a11b677EBb",
+        address: "0x854e8a3EBe3C60459ED5e4194eE404e3AcECe0af",
         abi: [
           {
             name: "mint",
