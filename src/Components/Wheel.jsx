@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from "react";
+import { ethers } from "ethers";
 import { useAccount, useWriteContract } from "wagmi";
+import { parseEther } from "viem";
 
 const CONTRACT_ADDRESS = "0x854e8a3EBe3C60459ED5e4194eE404e3AcECe0af";
 const ABI = [
   "function mint() external returns (uint256)",
   "function balanceOf(address user) external view returns (uint256)",
   "function ownerOf(uint256 tokenId) external view returns (address)",
-  "function totalSupply() external view returns (uint256)",
+  "function totalSupply() external view returns (uint256)"
 ];
-
 export default function Wheel() {
   const segments = useMemo(
     () => [
@@ -29,7 +30,9 @@ export default function Wheel() {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
-  const { isConnected } = useAccount();
+  const { address, isConnected } = useAccount();
+
+  // ✅ mint fonksiyonu için wagmi hook
   const { writeContractAsync } = useWriteContract();
 
   const handleSpin = () => {
@@ -55,9 +58,18 @@ export default function Wheel() {
     try {
       if (!isConnected) return alert("Cüzdan bağlı değil!");
       await writeContractAsync({
-        address: CONTRACT_ADDRESS,
-        abi: ABI,
-        functionName: "mint", // ✅ parametresiz çağrı
+        address: "0x854e8a3EBe3C60459ED5e4194eE404e3AcECe0af",
+        abi: [
+          {
+            name: "mint",
+            type: "function",
+            stateMutability: "nonpayable",
+            inputs: [{ name: "to", type: "address" }],
+            outputs: [{ name: "tokenId", type: "uint256" }],
+          },
+        ],
+        functionName: "mint",
+        args: [address],
       });
       alert("Mint başarılı 🎯");
     } catch (err) {
@@ -68,7 +80,6 @@ export default function Wheel() {
 
   return (
     <div className="flex flex-col items-center gap-6 relative">
-      {/* 🔺 Ok */}
       <div
         className="absolute z-50"
         style={{
@@ -84,7 +95,6 @@ export default function Wheel() {
         }}
       />
 
-      {/* 🎡 Çark */}
       <div
         onTransitionEnd={onTransitionEnd}
         className="relative flex items-center justify-center shadow-2xl"
@@ -121,6 +131,7 @@ export default function Wheel() {
             </div>
           );
         })}
+
         <div className="absolute w-24 h-24 rounded-full bg-[#0f172a] flex items-center justify-center border border-white/30 text-lg font-bold">
           🎰
         </div>
