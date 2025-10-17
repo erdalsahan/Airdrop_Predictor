@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { ethers, Contract } from "ethers";
-import { sdk } from "@farcaster/miniapp-sdk";
+import React, { useState, useMemo } from "react";
+import { ethers } from "ethers";
+import { useAccount, useWriteContract } from "wagmi";
+import { parseEther } from "viem";
 
 const CONTRACT_ADDRESS = "0x303D8e109143D6e44E5e1DFb0c2A03756C0B998d";
 const ABI = [
@@ -28,26 +29,12 @@ export default function Wheel() {
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  // ✅ Farcaster provider'ı al
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await sdk.actions.ready();
-        const ethProvider = await sdk.wallet.getEthereumProvider();
-        if (!ethProvider) {
-          console.error("Farcaster wallet bulunamadı.");
-          return;
-        }
-        setProvider(new ethers.BrowserProvider(ethProvider));
-      } catch (err) {
-        console.error("Farcaster provider yüklenemedi:", err);
-      }
-    };
-    init();
-  }, []);
+  const { address, isConnected } = useAccount();
+const [tokenId, setTokenId] = useState(1);
+  const [amount, setAmount] = useState(1);
+  const [tokenURI, setTokenURI] = useState("https://gateway.pinata.cloud/ipfs/YOUR_METADATA.json");
+  // ✅ mint fonksiyonu için wagmi hook
+  const { writeContractAsync } = useWriteContract();
 
   const handleSpin = () => {
     if (spinning) return;
@@ -63,42 +50,51 @@ export default function Wheel() {
     setRotation((prev) => prev + delta);
   };
 
-  const onTransitionEnd = () => {
+  const onTransitionEnd = async () => {
     setSpinning(false);
     setResult("🎉 Kazandın!");
   };
 
-  // ✅ Farcaster wallet üzerinden mint işlemi
   const handleMint = async () => {
-    try {
-      if (!provider) {
-        alert("Farcaster cüzdan bulunamadı!");
-        return;
+      try {
+        if (!window.ethereum) {
+          alert("Cüzdan bulunamadı!");
+          return;
+        }
+  
+        
+  
+        // Cüzdan bağlantısı
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+  
+        // Kontrat instance
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+  
+        // Mint fiyatını al
+        const mintPrice = await contract.mintPrice();
+  
+        // Örnek tokenURI (sen IPFS linki ile değiştirebilirsin)
+        const tokenURI = "https://gateway.pinata.cloud/ipfs/YOUR_METADATA.json";
+  
+        // Mint işlemi
+        const tx = await contract.mint(tokenURI, { value: mintPrice });
+        alert("Mint işlemi gönderildi, bekleyin... ⏳");
+  
+        await tx.wait(); // On-chain olmasını bekle
+        alert(`NFT başarıyla mintlendi! TxHash: ${tx.hash}`);
+  
+      } catch (error) {
+        console.error(error);
+        alert("Mint işlemi başarısız ❌: " + (error?.message || error));
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(true);
-      const signer = await provider.getSigner();
-      const contract = new Contract(CONTRACT_ADDRESS, ABI, signer);
-
-      const mintPrice = await contract.mintPrice();
-      const tokenURI = "https://gateway.pinata.cloud/ipfs/YOUR_METADATA.json";
-
-      const tx = await contract.mint(tokenURI, { value: mintPrice });
-      alert("Mint işlemi gönderildi! ⏳");
-
-      await tx.wait();
-      alert("✅ Mint başarılı!");
-    } catch (err) {
-      console.error("Mint hatası:", err);
-      alert("Mint başarısız ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
   return (
     <div className="flex flex-col items-center gap-6 relative">
-      {/* Ok */}
       <div
         className="absolute z-50"
         style={{
@@ -114,7 +110,6 @@ export default function Wheel() {
         }}
       />
 
-      {/* Çark */}
       <div
         onTransitionEnd={onTransitionEnd}
         className="relative flex items-center justify-center shadow-2xl"
@@ -173,10 +168,9 @@ export default function Wheel() {
           <div className="text-2xl font-bold text-amber-300">{result}</div>
           <button
             onClick={handleMint}
-            disabled={loading}
             className="mt-4 px-6 py-2 rounded-xl font-semibold shadow-lg bg-blue-500 hover:bg-blue-600"
           >
-            {loading ? "Mintleniyor..." : "🎁 Mintle"}
+            🎁 Mintle
           </button>
         </>
       )}
