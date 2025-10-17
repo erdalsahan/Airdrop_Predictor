@@ -54,20 +54,29 @@ export default function Wheel() {
     setResult("🎉 Kazandın!");
   };
 
-const handleMint = async () => {
-  try {
-    if (!isConnected) return alert("Cüzdan bağlı değil!");
-    await writeContractAsync({
-      address: CONTRACT_ADDRESS,
-      abi: ABI,
-      functionName: "mint",
-    });
-    alert("Mint başarılı 🎯");
-  } catch (err) {
-    console.error(err);
-    alert("Mint başarısız ❌");
-  }
-};
+  const handleMint = async () => {
+    try {
+      if (!isConnected) return alert("Cüzdan bağlı değil!");
+      await writeContractAsync({
+        address: "0x854e8a3EBe3C60459ED5e4194eE404e3AcECe0af",
+        abi: [
+          {
+            name: "mint",
+            type: "function",
+            stateMutability: "nonpayable",
+            inputs: [{ name: "to", type: "address" }],
+            outputs: [{ name: "tokenId", type: "uint256" }],
+          },
+        ],
+        functionName: "mint",
+        args: [address],
+      });
+      alert("Mint başarılı 🎯");
+    } catch (err) {
+      console.error(err);
+      alert("Mint başarısız ❌");
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 relative">
