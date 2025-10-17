@@ -24,7 +24,7 @@ export default function App() {
         <h2 className="text-3xl font-semibold mb-4">🎰 Spin to Win</h2>
         {!account&&<p className="text-gray-300 mb-8">Cüzdanını bağla ve şansını dene!</p>}
         
-        {account&&<Wheel />}
+        <Wheel />
       </main>
     </div>
      </WagmiProvider>
