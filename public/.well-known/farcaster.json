@@ -1,0 +1,11 @@
+{
+  "accountAssociation": {
+    "header": "...",
+    "payload": "...",
+    "signature": "..."
+  },
+  "name": "Airdrop Predictor",
+  "description": "🎰 Spin to Win - mint kazanma mini app",
+  "icon": "https://airdrop-predictor.vercel.app/icon.png",
+  "url": "https://airdrop-predictor.vercel.app"
+}
