@@ -25,7 +25,7 @@ export default function Header({setAccount,account}) {
 
   return (
     <header className="fixed top-0 left-0 w-full flex justify-between items-center px-6 py-3 bg-[#111827] text-white shadow-md z-50">
-      <h1 className="text-xl font-bold">🪙 Airdrop Kahini</h1>
+      <h1 className="text-xl font-bold">🪙 Airdrop Predictor</h1>
 
       {!account ? (
         <button
