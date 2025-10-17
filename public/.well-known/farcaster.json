@@ -12,7 +12,7 @@
   "miniapp": {
     "version": "1",
     "name": "Airdrop Predictor",
-    "description": "🎰 Spin to Win - Kazandığında mintle!",
+    "description": "Spin to Win - Kazandığında mintle!",
     "iconUrl": "https://airdrop-predictor.vercel.app/icon.png",
     "homeUrl": "https://airdrop-predictor.vercel.app",
     "canonicalDomain": "airdrop-predictor.vercel.app",
