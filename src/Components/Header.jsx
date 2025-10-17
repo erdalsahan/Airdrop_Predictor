@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { useAccount, useWriteContract } from "wagmi";
-import { parseEther } from "viem";
+
 export default function Header({setAccount,account}) {
   
 
