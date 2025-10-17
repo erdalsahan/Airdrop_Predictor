@@ -1,14 +1,25 @@
 {
-
   "accountAssociation": {
     "header": "eyJmaWQiOjEzNDIyNzksInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg4MTNCNzM4YzljNzNBNUNBMzViODAzNTgyMDg2QjI2NjM1OEY5OWI5In0",
     "payload": "eyJkb21haW4iOiJhaXJkcm9wLXByZWRpY3Rvci52ZXJjZWwuYXBwIn0",
     "signature": "MHhhZWRhNmYzZjdjYzUyYTJkNTE0NTQ1YjIyMzY2MTUyNDE1YWM5NWFmNTNlY2NmYjI3NGQ2ZjNjMmY4NmQ0NTQzNTZlZTBiYTg2MjMzNmJkYmI0NTgzYmIyMGE3NWZlZmI5ZTMyMjA5MmYyNDYyOTU3ZWU4MzJkYjI2OGE0MTFkMTFi"
   },
-
   "name": "Airdrop Predictor",
   "description": "🎰 Spin to Win - mint kazanma mini app",
   "icon": "https://airdrop-predictor.vercel.app/icon.png",
   "url": "https://airdrop-predictor.vercel.app",
-  "home_url": "https://airdrop-predictor.vercel.app"
+  "home_url": "https://airdrop-predictor.vercel.app",
+  "miniapp": {
+    "version": "1",
+    "name": "Airdrop Predictor",
+    "description": "🎰 Spin to Win - Kazandığında mintle!",
+    "iconUrl": "https://airdrop-predictor.vercel.app/icon.png",
+    "homeUrl": "https://airdrop-predictor.vercel.app",
+    "canonicalDomain": "airdrop-predictor.vercel.app",
+    "requiredChains": ["eip155:8453"], 
+    "tags": ["miniapp", "airdrop", "game", "mint"],
+    "requiredCapabilities": [
+      "actions.ready"
+    ]
+  }
 }
