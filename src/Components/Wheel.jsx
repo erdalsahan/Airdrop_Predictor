@@ -61,7 +61,15 @@ export default function Wheel() {
       if (!isConnected) return alert("Cüzdan bağlı değil!");
       await writeContractAsync({
         address: "0x8a0f9e67ba8f2076C4DfBd28735a4B4717C2B358",
-        abi:ABI,
+        abi: [
+          {
+            name: "mint",
+            type: "function",
+            stateMutability: "nonpayable",
+            inputs: [{ name: "to", type: "address" }],
+            outputs: [{ name: "tokenId", type: "uint256" }],
+          },
+        ],
         functionName: "mint",
         args: [address],
       });
